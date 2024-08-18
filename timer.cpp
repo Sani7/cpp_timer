@@ -1,7 +1,7 @@
 #include "timer.hpp"
 
-Timer::Timer(void (*function)()) {
-    this->function = function;
+Timer::Timer(std::function<void()> function) {
+    this->p_function = function;
 }
 
 void Timer::setTimeout(std::chrono::milliseconds delay) {
@@ -11,7 +11,7 @@ void Timer::setTimeout(std::chrono::milliseconds delay) {
         if(this->p_clear) return;
         std::this_thread::sleep_for(delay);
         if(this->p_clear) return;
-        function();
+        p_function();
     });
     t.detach();
 }
@@ -23,7 +23,7 @@ void Timer::setInterval(std::chrono::milliseconds interval) {
             if(this->p_clear) return;
             std::this_thread::sleep_for(interval);
             if(this->p_clear) return;
-            function();
+            p_function();
         }
     });
     t.detach();
