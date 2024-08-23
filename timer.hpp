@@ -10,6 +10,6 @@ public:
     void setInterval(std::chrono::milliseconds interval);
     void stop();
 private:
-    bool p_clear = false;
-    std::function<void()> p_function;
+    bool m_clear = false;
+    std::function<void()> m_function;
 };
