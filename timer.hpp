@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <thread>
+#include <mutex>
 #include <functional>
 
 class Timer {
@@ -11,5 +12,6 @@ public:
     void stop();
 private:
     bool m_clear = false;
+    std::mutex m_mutex;
     std::function<void()> m_function;
 };

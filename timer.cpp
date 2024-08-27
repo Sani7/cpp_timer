@@ -8,9 +8,11 @@ void Timer::setTimeout(std::chrono::milliseconds delay) {
 
     this->m_clear = false;
     std::thread t([this, delay]() {
-        if(this->m_clear) return;
         std::this_thread::sleep_for(delay);
-        if(this->m_clear) return;
+        {
+            std::lock_guard<std::mutex> lock(this->m_mutex);
+            if (this->m_clear) return;
+        }
         m_function();
     });
     t.detach();
@@ -20,9 +22,11 @@ void Timer::setInterval(std::chrono::milliseconds interval) {
     this->m_clear = false;
     std::thread t([this, interval]() {
         while(true) {
-            if(this->m_clear) return;
             std::this_thread::sleep_for(interval);
-            if(this->m_clear) return;
+            {
+                std::lock_guard<std::mutex> lock(this->m_mutex);
+                if (this->m_clear) return;
+            }
             m_function();
         }
     });
@@ -30,5 +34,8 @@ void Timer::setInterval(std::chrono::milliseconds interval) {
 }
 
 void Timer::stop() {
-    this->m_clear = true;
+    {
+        std::lock_guard<std::mutex> lock(this->m_mutex);
+        this->m_clear = true;
+    }
 }
