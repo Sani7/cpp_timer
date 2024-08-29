@@ -1,16 +1,17 @@
 #pragma once
 #include <chrono>
-#include <thread>
-#include <mutex>
 #include <functional>
+#include <mutex>
+#include <thread>
 
 class Timer {
-public:
+  public:
     Timer(std::function<void()> function);
     void setTimeout(std::chrono::milliseconds delay);
     void setInterval(std::chrono::milliseconds interval);
     void stop();
-private:
+
+  private:
     bool m_clear = false;
     std::mutex m_mutex;
     std::function<void()> m_function;
